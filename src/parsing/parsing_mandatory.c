@@ -31,6 +31,7 @@ int	process_command(t_token **tokens, t_ast_node **root,
 	command_tokens = extract_command_tokens(tokens);
 	if (!command_tokens)
 		return (0);
+	ft_tabprint((const char **)command_tokens, "cmds: ", "", STDERR_FILENO);
 	command_node = new_ast_node(AST_COMMAND, command_tokens);
 	if (!command_node)
 		return (0);

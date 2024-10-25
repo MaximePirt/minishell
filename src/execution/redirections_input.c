@@ -65,6 +65,7 @@ int	execute_redirect_input(t_minishell *minishell, t_ast_node *ast,
 	if (test_file_access(ast->right->value[0]))
 	{
 		in_out[0] = open(ast->right->value[0], O_RDONLY);
+		add_fd_to_close(minishell->opened_fds, in_out[0]);
 		setup_pipes(pipes, in_out, 0);
 		close(pipes[0]);
 		close(pipes[1]);
