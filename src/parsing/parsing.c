@@ -87,7 +87,7 @@ static t_token	*tokenize_input(t_minishell *minishell, char *trimmed)
 	tokens = NULL;
 	tokenize(trimmed, &tokens);
 	free(trimmed);
-	if (!tokens)
+	if (!tokens || !check_double_heredoc_happend(tokens))
 	{
 		minishell->exit_code = 2;
 		return (NULL);

@@ -126,3 +126,26 @@ int	handle_token_errors(t_minishell *minishell,
 	free_tokens(tokens);
 	return (1);
 }
+
+int	check_double_heredoc_happend(t_token *tokens)
+{
+	t_token	*tmp;
+
+	tmp = tokens;
+	while (tmp)
+	{
+		if (tmp->type == TOKEN_HEREDOC || tmp->type == TOKEN_REDIR_OUT_APPEND)
+		{
+			if (tmp->next && (tmp->next->type == TOKEN_HEREDOC
+					|| tmp->type == TOKEN_REDIR_OUT_APPEND))
+			{
+				ft_fprintf(STDERR_FILENO,
+					"minishell: syntax error: multiple redirections\n");
+				free_tokens(tokens);
+				return (0);
+			}
+		}
+		tmp = tmp->next;
+	}
+	return (1);
+}

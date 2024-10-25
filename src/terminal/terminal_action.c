@@ -59,11 +59,9 @@ int	tab_input_protection(t_minishell *minishell, char *new)
 		if (ft_strlen(tmp) <= 0 || tmp == NULL)
 		{
 			free(tmp);
-			tmp = NULL;
 			return (1);
 		}
 		free(tmp);
-		tmp = NULL;
 	}
 	return (0);
 }

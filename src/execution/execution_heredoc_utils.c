@@ -34,23 +34,24 @@ void	setup_heredoc_parent_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-int	handle_heredoc_parent_process(t_minishell *minishell, int *tmp_pipe,
-								pid_t pid, int *output_fd)
+/**
+ * @brief Run the heredoc logic in a fork and handle signals in the child
+ *
+ * @param t_minishell *minishell
+ * @param char *delimiter
+ * @param int *output_fd
+ * @return int 1 on success, 0 on failure
+ */
+void	setup_heredoc_child_signals(void)
 {
-	int	status;
+	struct sigaction	sa_child;
 
-	setup_heredoc_parent_signals();
-	close(tmp_pipe[1]);
-	waitpid(pid, &status, 0);
-	*output_fd = tmp_pipe[0];
-	if (minishell->exit_code == 130)
-	{
-		close(*output_fd);
-		return (0);
-	}
-	else
-		minishell->exit_code = 0;
-	return (1);
+	ft_memset(&sa_child, 0, sizeof(sa_child));
+	sa_child.sa_flags = 0;
+	sa_child.sa_handler = heredoc_signal_handler;
+	sigemptyset(&sa_child.sa_mask);
+	sigaction(SIGINT, &sa_child, NULL);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	write_and_cleanup_heredoc(t_heredoc_info *heredoc_info, int fd)

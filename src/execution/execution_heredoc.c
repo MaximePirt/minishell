@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	*g_exit_code;
+int	g_exit_code;
 
 /**
  * @brief Load the heredoc info
@@ -51,25 +51,24 @@ static t_heredoc_info	*load_heredoc_info(t_minishell *minishell,
 	return (heredoc_info);
 }
 
-/**
- * @brief Run the heredoc logic in a fork and handle signals in the child
- *
- * @param t_minishell *minishell
- * @param char *delimiter
- * @param int *output_fd
- * @return int 1 on success, 0 on failure
- */
-
-void	setup_heredoc_child_signals(void)
+int	handle_heredoc_parent_process(t_minishell *minishell, int *tmp_pipe,
+							pid_t pid, int *output_fd)
 {
-	struct sigaction	sa_child;
+	int	status;
 
-	ft_memset(&sa_child, 0, sizeof(sa_child));
-	sa_child.sa_flags = 0;
-	sa_child.sa_handler = heredoc_signal_handler;
-	sigemptyset(&sa_child.sa_mask);
-	sigaction(SIGINT, &sa_child, NULL);
-	signal(SIGQUIT, SIG_IGN);
+	setup_heredoc_parent_signals();
+	close(tmp_pipe[1]);
+	waitpid(pid, &status, 0);
+	*output_fd = tmp_pipe[0];
+	minishell->exit_code = g_exit_code;
+	if (minishell->exit_code == 130)
+	{
+		close(*output_fd);
+		return (0);
+	}
+	else
+		minishell->exit_code = 0;
+	return (1);
 }
 
 /**
@@ -81,7 +80,7 @@ void	setup_heredoc_child_signals(void)
 void	parent_signal_handler(int sig)
 {
 	if (sig == SIGINT)
-		*g_exit_code = 130;
+		g_exit_code = 130;
 }
 
 void	handle_heredoc_child_process(t_minishell *minishell,
@@ -109,9 +108,9 @@ int	run_heredoc(t_minishell *minishell, char *delimiter, int *output_fd)
 	pid_t	pid;
 	int		tmp_pipe[2];
 
+	g_exit_code = 0;
 	if (pipe(tmp_pipe) == -1)
 		return (0);
-	g_exit_code = &minishell->exit_code;
 	pid = fork();
 	if (pid < 0)
 	{

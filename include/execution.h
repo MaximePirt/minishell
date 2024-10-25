@@ -87,6 +87,8 @@ int				execute_redirect_output_append(t_minishell *minishell,
 
 int				handle_heredoc_parent_process(t_minishell *minishell,
 					int *tmp_pipe, pid_t pid, int *output_fd);
+void			setup_heredoc_child_signals(void);
+void			setup_heredoc_parent_signals(void);
 void			write_and_cleanup_heredoc(t_heredoc_info *heredoc_info, int fd);
 void			heredoc_signal_handler(int sig);
 void			parent_signal_handler(int sig);
