@@ -1,0 +1,15 @@
+origin: 42
+domains: [systems]
+summary:
+  fr: "42 • C / Unix"
+  en: "42 • C / Unix"
+description:
+  fr: >
+    Implémentation d'un shell Unix minimaliste en C, capable d'exécuter des commandes,
+    gérer les signaux, les redirections et les pipes. Démontre une maîtrise des concepts
+    fondamentaux de programmation système et de manipulation de processus.
+  en: >
+    Implementation of a minimalist Unix shell in C, capable of executing commands,
+    handling signals, redirections, and pipes. Demonstrates proficiency in systems
+    programming and process management fundamentals.
+stack: [C, Unix, Readline, Make]
